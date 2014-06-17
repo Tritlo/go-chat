@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Mpgis chat</title>
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+    <script type="text/javascript" charset="utf-8">
+ $(document).ready(function(){
+
+     // the socket.io documentation recommends sending an explicit package upon connection
+     // this is specially important when using the global namespace
+     var socket = io.connect();
+     //var socket = io.connect('https://' + document.domain + ':' + location.port + namespace);
+     socket.on('onlinechange', function(msg) {
+         users = JSON.parse(msg);
+         $("#online").empty();
+         for(user in users){
+             $("#online").append("<li>"+users[user]+"</li>");
+         }
+     });
+
+     // event handler for server sent data
+     // the data is displayed in the "Received" section of the page
+     socket.on('chatresponse', function(msg) {
+         $('#recieve').append(msg+'\n' );
+         $('#recieve').scrollTop($('#recieve')[0].scrollHeight);
+         });
+
+     // handlers for the different forms in the page
+     // these send data to the server in a variety of ways
+     $('form#chatform').submit(function(event) {
+         uname = $('#unameinp').val();
+         if($('#msg').val().length > 0){
+             socket.emit('chat',  $('#msg').val() );
+         }
+         // clear message
+         $('#msg').val("");
+         $('#msg').focus();
+         return false;
+     });
+     $('form#registerform').submit(function(event) {
+         uname = $('#unameinp').val();
+         socket.emit('register',uname);
+         return false;
+     });
+ });
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+    <div class ="span6">
+    <legend>Chat</legend>
+
+    <form class="form-horizontal" id="registerform" method="POST" action="#">
+
+    <fieldset>
+        <div class="control-group">
+          <label class="control-label" for="unameinp">Name:</label>
+          <div class="controls">
+            <input id="unameinp" name="unameinp" placeholder="Name" class="input-xlarge" type="text">
+            <button id="register" name="register" class="btn btn-default">Register</button>
+          </div>
+        </div>
+    </fieldset>
+        </form>
+
+    <br />
+    <label class="control-label" for="text">Chat:</label>
+    <br />
+    <textarea id="recieve" rows="20" cols="28" name="text" readonly></textarea>
+    <br />
+    <form class="form-horizontal" id="chatform" method="POST" action="#">
+    <fieldset>
+
+    <!-- Textarea -->
+    <div class="control-group">
+      <label class="control-label" for="msg">Message:</label>
+      <div class="controls">
+          <input id="msg" name="msg" placeholder="msg" class="input-xlarge" type="text" autocomplete="off">
+          <button id="send" name="send" class="btn btn-default">Send</button>
+      </div>
+    </div>
+
+
+    </fieldset>
+    </form>
+    <label for="online">Online</label>
+    <ul id="online" name="online">
+    <ul>
+    </div>
+</div>
+</div>
+</body>
+</html>
