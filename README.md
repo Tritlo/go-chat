@@ -6,6 +6,18 @@ A very simple chat program using go-socket.io (from googollee) and martini
 
 Uses either a port or a socket.
 
+After installing dependencies with:
+    go get     github.com/codegangsta/martini
+    go get github.com/codegangsta/martini-contrib/render
+    go get github.com/googollee/go-socket.io
+
+
+Run with:
+    go run chat.go
+
+Reads PORT from environment, but uses a socket if SOCKET environment variable
+exists. Default port is 3000.
+
 Example nginx.conf (a little changed from a live config):
 
     upstream chat_server {
