@@ -1,6 +1,8 @@
 Go chat
 =======
 
+[![Build Status](https://travis-ci.org/Tritlo/go-chat.svg?branch=master)](https://travis-ci.org/Tritlo/go-chat)
+
 A very simple chat program using go-socket.io (from googollee) and martini
 (from codegansta).
 
